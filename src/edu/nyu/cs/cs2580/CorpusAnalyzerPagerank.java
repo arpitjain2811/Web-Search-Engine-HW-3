@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.HashSet;
+import java.util.Map;
 import edu.nyu.cs.cs2580.CorpusAnalyzer.HeuristicLinkExtractor;
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
@@ -13,7 +14,7 @@ import edu.nyu.cs.cs2580.SearchEngine.Options;
  * @CS2580: Implement this class for HW3.
  */
 public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
-	private HashMap<String, HashSet<String> > _linksource = new HashMap<String, HashSet<String>>();
+	private HashMap<String, HashSet<String> > _linkGraph = new HashMap<String, HashSet<String>>();
   public CorpusAnalyzerPagerank(Options options) {
     super(options);
   }
@@ -47,19 +48,22 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
      
     String link_name;
     String corresponding_links;
-    
+    HashMap<String, HashSet<String> > linksource = new HashMap<String, HashSet<String>>();
+    System.out.println("Extracting Links");
+    int num_docs = 0;
     for (final File fileEntry : Dir.listFiles()) 
-    {
-	  if ( !fileEntry.isDirectory() ) 
-	  {
+    {	
+    	num_docs += 1;		
+	if ( !fileEntry.isDirectory() ) 
+	{
 	      
 	      	// dont read hidden files
 	      	if(fileEntry.isHidden())
 			continue;
 	    
 	      	// special case for testing with corpus.tsv
-	      	System.out.println("IncomingFile");
-	      	System.out.println(fileEntry.getName());
+	      	//System.out.println("IncomingFile");
+	      	//System.out.println(fileEntry.getName());
 	      	// Create Extract link object
 	      	HeuristicLinkExtractor f = new HeuristicLinkExtractor(fileEntry);
 		// Get Main source page link
@@ -81,10 +85,38 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 		}
 		HashSet<String> linkSet = new HashSet<String>(linkList);
 		// Put the array list of Strings (Links in source page into a hash map)
-		_linksource.put(link_name, linkSet);
-		System.out.println(linkSet);	
+		linksource.put(link_name, linkSet);
+		//System.out.println(linkSet);	
 	  }
-    }
+	if (num_docs >1000)
+		break;
+	}
+
+	// Create a local map variable (efficient to iterate over)
+	Map<String, HashSet<String>> linkMap = new HashMap<String, HashSet<String> >(linksource);
+	System.out.println("Creating Graph");
+	// Iterate over Map keys
+	for (String key: linkMap.keySet())
+	    {
+	    	HashSet<String> links = new HashSet<String>();
+	    	HashSet<String> linkAdjSet = new HashSet<String>();
+		
+		// Store Link Set of a particular key
+		links = linkMap.get(key);
+		
+	    	//Iterate over the links in the set
+	    	for (String link_values: links)
+		{	
+	    		//Add to the adjacency list  (HashSet) if present in corpus
+	    		if (linkMap.containsKey(link_values))
+	    		{
+	    			linkAdjSet.add(link_values);
+	    		}
+		}	 
+		_linkGraph.put(key, linkAdjSet);
+	    }
+	System.out.println(_linkGraph);
+
     return;
   }
 
