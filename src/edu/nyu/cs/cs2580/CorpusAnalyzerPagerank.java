@@ -1,13 +1,19 @@
 package edu.nyu.cs.cs2580;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Vector;
 
+import edu.nyu.cs.cs2580.CorpusAnalyzer.HeuristicLinkExtractor;
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
 /**
  * @CS2580: Implement this class for HW3.
  */
 public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
+	private HashMap<String, ArrayList<String> > _linksource = new HashMap<String, ArrayList<String>>();
   public CorpusAnalyzerPagerank(Options options) {
     super(options);
   }
@@ -34,6 +40,49 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
   @Override
   public void prepare() throws IOException {
     System.out.println("Preparing " + this.getClass().getName());
+    System.out.println("Computing using " + this.getClass().getName());
+    ReadCorpus DocReader = new ReadCorpus();
+    String corpusDir = _options._corpusPrefix;
+    final File Dir = new File(corpusDir);
+    
+    String link_name;
+    String corresponding_links;
+    ArrayList <String> linkSet = new ArrayList <String>();
+    for (final File fileEntry : Dir.listFiles()) 
+    {
+	  if ( !fileEntry.isDirectory() ) 
+	  {
+	      
+	      // dont read hidden files
+	      if(fileEntry.isHidden())
+		  continue;
+	    
+	      // special case for testing with corpus.tsv
+	      if (fileEntry.getName().endsWith("corpus.tsv") ) {
+		  System.out.println(fileEntry.getName());
+		  // Create Extract link object
+		  HeuristicLinkExtractor f = new HeuristicLinkExtractor(fileEntry);
+		  // Get Main source page link
+		  link_name= f.getLinkSource();
+		  // Get all links (Page names) present in the source page
+		  while (true)
+		  {
+			  // Get next link in Page until it returns null
+			  corresponding_links = f.getNextInCorpusLinkTarget();
+			  if (corresponding_links != null)
+			  {
+				  linkSet.add(corresponding_links);
+			  }
+			  else{
+				  break;
+			  }
+			  		  
+		  }
+		  // Put the array list of Strings (Links in source page into a hash map)
+		  _linksource.put(link_name, linkSet);
+	      }
+	  }
+    }
     return;
   }
 
