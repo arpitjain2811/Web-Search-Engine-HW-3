@@ -14,7 +14,8 @@ import edu.nyu.cs.cs2580.SearchEngine.Options;
  * @CS2580: Implement this class for HW3.
  */
 public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
-	private HashMap<String, HashSet<String> > _linkGraph = new HashMap<String, HashSet<String>>();
+	private HashMap<Integer, HashSet<Integer> > _linkGraph = new HashMap<Integer, HashSet<Integer>>();
+	private HashMap<String, Integer> _linkHash = new HashMap<String, Integer>();
   public CorpusAnalyzerPagerank(Options options) {
     super(options);
   }
@@ -87,6 +88,8 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 		// Put the array list of Strings (Links in source page into a hash map)
 		linksource.put(link_name, linkSet);
 		//System.out.println(linkSet);	
+		_linkHash.put(link_name, num_docs);
+		
 	  }
 	if (num_docs >1000)
 		break;
@@ -99,7 +102,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 	for (String key: linkMap.keySet())
 	    {
 	    	HashSet<String> links = new HashSet<String>();
-	    	HashSet<String> linkAdjSet = new HashSet<String>();
+	    	HashSet<Integer> linkAdjSet = new HashSet<Integer>();
 		
 		// Store Link Set of a particular key
 		links = linkMap.get(key);
@@ -110,10 +113,10 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 	    		//Add to the adjacency list  (HashSet) if present in corpus
 	    		if (linkMap.containsKey(link_values))
 	    		{
-	    			linkAdjSet.add(link_values);
+	    			linkAdjSet.add(_linkHash.get(link_values));
 	    		}
 		}	 
-		_linkGraph.put(key, linkAdjSet);
+		_linkGraph.put(_linkHash.get(key), linkAdjSet);
 	    }
 	System.out.println(_linkGraph);
 
