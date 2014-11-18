@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -24,7 +25,9 @@ import edu.nyu.cs.cs2580.SearchEngine.Options;
  * @author congyu
  */
 class IndexerFullScan extends Indexer implements Serializable {
-  private static final long serialVersionUID = 1077111905740085030L;
+    private static final long serialVersionUID = 1077111905740085030L;
+
+    private ReadCorpus DocReader = new ReadCorpus();
 
   // Maps each term to their integer representation
   private Map<String, Integer> _dictionary = new HashMap<String, Integer>();
@@ -61,6 +64,48 @@ class IndexerFullScan extends Indexer implements Serializable {
    */
   @Override
   public void constructIndex() throws IOException {
+      
+      String corpusDir = _options._corpusPrefix;
+      System.out.println("Constructing index documents in: " + corpusDir);
+
+      final File Dir = new File(corpusDir);
+      int n_doc=0;
+      for (final File fileEntry : Dir.listFiles()) {
+	  if ( !fileEntry.isDirectory() ){
+	      
+	      // dont read hidden files
+	      if(fileEntry.isHidden())
+		  continue;
+	    
+	      // special case for testing with corpus.tsv
+	      if (fileEntry.getName().endsWith("corpus.tsv") ) {
+		  System.out.println(fileEntry.getName());
+		  BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
+		  try {
+		      String line = null;
+		      while ((line = reader.readLine()) != null) {
+			  System.out.println("Document" + n_doc);
+			  line = DocReader.createFileInput(line);
+			  processDocument(line);
+			  
+			  n_doc++;
+		      }
+		  } 
+		  finally {
+		      reader.close();
+		  }
+	      }
+	      else {
+		  System.out.println(fileEntry.getName());
+		  String nextDoc = DocReader.createFileInput(fileEntry);
+		  processDocument(nextDoc);
+	      }
+	  } 
+      }
+
+
+
+      /*
     String corpusFile = _options._corpusPrefix + "/corpus.tsv";
     System.out.println("Construct index from: " + corpusFile);
 
@@ -73,6 +118,7 @@ class IndexerFullScan extends Indexer implements Serializable {
     } finally {
       reader.close();
     }
+      */
     System.out.println(
         "Indexed " + Integer.toString(_numDocs) + " docs with " +
         Long.toString(_totalTermFrequency) + " terms.");
@@ -101,6 +147,8 @@ class IndexerFullScan extends Indexer implements Serializable {
     readTermVector(s.next(), bodyTokens);
 
     int numViews = Integer.parseInt(s.next());
+
+    String url = s.next();
     s.close();
 
     DocumentFull doc = new DocumentFull(_documents.size(), this);
@@ -108,6 +156,7 @@ class IndexerFullScan extends Indexer implements Serializable {
     doc.setNumViews(numViews);
     doc.setTitleTokens(titleTokens);
     doc.setBodyTokens(bodyTokens);
+    doc.setUrl(url);
     _documents.add(doc);
     ++_numDocs;
 
@@ -195,8 +244,15 @@ class IndexerFullScan extends Indexer implements Serializable {
         "with " + Long.toString(_totalTermFrequency) + " terms!");
   }
 
-  ///// Serving related functions.
-
+    
+  @Override
+  public double NextPhrase(Query query, int docid, int pos) {
+	SearchEngine.Check(false, "Not implemented!");
+	return 0.0;
+    }
+    
+    ///// Serving related functions.
+    
   @Override
   public Document getDoc(int did) {
     return (did >= _documents.size() || did < 0) ? null : _documents.get(did);
@@ -221,7 +277,7 @@ class IndexerFullScan extends Indexer implements Serializable {
   }
 
   @Override
-  public int documentTermFrequency(String term, int docid) {
+  public int documentTermFrequency(String term, String url) {
     SearchEngine.Check(false, "Not implemented!");
     return 0;
   }

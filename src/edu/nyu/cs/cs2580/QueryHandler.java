@@ -42,7 +42,6 @@ class QueryHandler implements HttpHandler {
       PHRASE,
       QL,
       LINEAR,
-      COMPREHENSIVE,
     }
     public RankerType _rankerType = RankerType.NONE;
     
@@ -157,6 +156,7 @@ class QueryHandler implements HttpHandler {
     // Processing the query.
     Query processedQuery = new Query(cgiArgs._query);
     processedQuery.processQuery();
+    
 
     // Ranking.
     Vector<ScoredDocument> scoredDocs =
