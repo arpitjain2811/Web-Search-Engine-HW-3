@@ -130,7 +130,9 @@ public abstract class Indexer {
 
   // Number of times {@code term} appeared in the document {@code docid}.
   // *** @CS2580: Note the function signature change from url to docid. ***
-  public abstract int documentTermFrequency(String term, int docid);
+  public abstract int documentTermFrequency(String term, String url);
+
+  public abstract double NextPhrase(Query query, int docid, int pos);
 
   /**
    * All Indexers must be created through this factory class based on the
