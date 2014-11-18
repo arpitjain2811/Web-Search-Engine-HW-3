@@ -67,8 +67,11 @@ public abstract class Ranker {
         return new RankerConjunctive(options, arguments, indexer);
       case FAVORITE:
         return new RankerFavorite(options, arguments, indexer);
+      case COMPREHENSIVE:
+        return new RankerComprehensive(options, arguments, indexer);
       case COSINE:
-    	  return new RankerFavorite(options, arguments, indexer);
+        // Plug in your cosine Ranker
+        break;
       case QL:
         // Plug in your QL Ranker
         break;
