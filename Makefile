@@ -3,6 +3,7 @@ JVM = java
 JFLAGS = -classpath jsoup-1.8.1.jar
 INDEXFLAGS = -classpath "jsoup-1.8.1.jar:src" 
 RUNFLAGS = -classpath "jsoup-1.8.1.jar:src" -Xmx512m
+MININGFLAGS = -classpath "jsoup-1.8.1.jar:src"
 
 .java.class:
 	$(JCC) $(JFLAGS) $*.java
@@ -33,6 +34,9 @@ CLASSES = \
 
 default:
 	$(JCC) $(JFLAGS) src/edu/nyu/cs/cs2580/*.java
+
+mining:
+	$(JVM) $(MININGFLAGS) edu.nyu.cs.cs2580.SearchEngine --mode=mining --options=conf/engine.conf
 
 index:
 	$(JVM) $(INDEXFLAGS) edu.nyu.cs.cs2580.SearchEngine --mode=index --options=conf/engine.conf
