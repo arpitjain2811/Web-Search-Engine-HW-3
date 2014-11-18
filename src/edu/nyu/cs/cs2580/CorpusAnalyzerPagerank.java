@@ -77,18 +77,12 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 			else
 			{
 				break;
-			}
-			  
-			  
-			  		  
+			}		  
 		}
 		HashSet<String> linkSet = new HashSet<String>(linkList);
 		// Put the array list of Strings (Links in source page into a hash map)
 		_linksource.put(link_name, linkSet);
-		System.out.println(linkSet);
-		
-		
-	      
+		System.out.println(linkSet);	
 	  }
     }
     return;
