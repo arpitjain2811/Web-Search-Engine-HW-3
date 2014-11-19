@@ -66,6 +66,12 @@ public class SearchEngine {
     // The specific CorpusAnalyzer to be used.
     public String _corpusAnalyzerType = null;
 
+    // The specific value for alpha for PageRank.
+    public Float _alpha = null;
+
+    // Number of iterations to run for PageRank
+    public Integer _iterations = null;
+
     // The specific LogMiner to be used.
     public String _logMinerType = null;
 
@@ -110,6 +116,14 @@ public class SearchEngine {
       _corpusAnalyzerType = options.get("corpus_analyzer_type");
       Check(_corpusAnalyzerType != null,
           "Missing option: corpus_analyzer_type!");
+      
+      _alpha = Float.valueOf( options.get("alpha") );
+      Check(_alpha != null, 
+	    "Missing option: alpha");
+
+      _iterations = Integer.valueOf( options.get("iterations") );
+      Check(_iterations != null, 
+	    "Missing option: iterations");
 
       _logMinerType = options.get("log_miner_type");
       Check(_logMinerType != null, "Missing option: log_miner_type!");
