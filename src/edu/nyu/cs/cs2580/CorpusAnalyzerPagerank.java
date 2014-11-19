@@ -18,6 +18,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
     private HashMap<Integer, HashSet<Integer> > _linkGraph = new HashMap<Integer, HashSet<Integer>>();
     private HashMap<String, Integer> _linkHash = new HashMap<String, Integer>();
     private ArrayList<Document> _ranked_docs = new ArrayList<Document>();
+    private HashMap<Integer, Double> _pgRank = new HashMap<Integer, Double>();
 
   public CorpusAnalyzerPagerank(Options options) {
     super(options);
@@ -135,13 +136,31 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 	    float distribute_rank = (float) _options._alpha * (ranks.get(node)) / links.size();
 	    for (Integer link : links) {
 		float tmp = new_ranks.get(link);
-		new_ranks.set(link, tmp + distribute_rank);
+		new_ranks.set(link, tmp + distribute_rank);	
 		System.out.print(new_ranks.get(link));
 	    }
 	}
 	ranks = new_ranks;
     }
-    System.out.print(ranks);
+
+    /*
+    Map<Integer, HashSet<Integer>> Graph = new HashMap<Integer, HashSet<Integer> >(_linkGraph);
+    for (Integer keys: Graph.keySet())
+    {
+    	int no_links = (Graph.get(keys).size());
+    	int total_links = (Graph.size());
+    	double alpha = 0.7;
+	double PageRank = (1.0 - alpha)*((total_links - no_links)*1.0)*(1/(total_links*1.0));
+	System.out.println(PageRank);
+	if (no_links >0)
+	{
+		PageRank += no_links*(alpha/(no_links*1.0) + (1.0 - alpha)*(1/(total_links*1.0)));
+	}
+	
+    	_pgRank.put(keys, PageRank);   	
+    }
+    System.out.println(_pgRank);
+    */
     return;
   }
 
