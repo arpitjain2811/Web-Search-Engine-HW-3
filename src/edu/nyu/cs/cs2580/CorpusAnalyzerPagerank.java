@@ -16,6 +16,7 @@ import edu.nyu.cs.cs2580.SearchEngine.Options;
 public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 	private HashMap<Integer, HashSet<Integer> > _linkGraph = new HashMap<Integer, HashSet<Integer>>();
 	private HashMap<String, Integer> _linkHash = new HashMap<String, Integer>();
+	private HashMap<Integer, Double> _pgRank = new HashMap<Integer, Double>();
   public CorpusAnalyzerPagerank(Options options) {
     super(options);
   }
@@ -91,7 +92,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 		_linkHash.put(link_name, num_docs);
 		
 	  }
-	if (num_docs >1000)
+	if (num_docs >100)
 		break;
 	}
 
@@ -139,6 +140,22 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
   @Override
   public void compute() throws IOException {
     System.out.println("Computing using " + this.getClass().getName());
+    Map<Integer, HashSet<Integer>> Graph = new HashMap<Integer, HashSet<Integer> >(_linkGraph);
+    for (Integer keys: Graph.keySet())
+    {
+    	int no_links = (Graph.get(keys).size());
+    	int total_links = (Graph.size());
+    	double alpha = 0.7;
+	double PageRank = (1.0 - alpha)*((total_links - no_links)*1.0)*(1/(total_links*1.0));
+	System.out.println(PageRank);
+	if (no_links >0)
+	{
+		PageRank += no_links*(alpha/(no_links*1.0) + (1.0 - alpha)*(1/(total_links*1.0)));
+	}
+	
+    	_pgRank.put(keys, PageRank);   	
+    }
+    System.out.println(_pgRank);
     return;
   }
 
