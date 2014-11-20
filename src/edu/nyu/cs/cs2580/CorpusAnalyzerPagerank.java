@@ -48,6 +48,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
    * resulting graph, which will be used by the {@link compute} function. Since
    * the graph may be large, it may be necessary to store partial graphs to
    * disk before producing the final graph.
+ * @return 
    *
    * @throws IOException
    */
@@ -122,7 +123,6 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
 
   return;
 } 
-
     /**
    * This function computes the PageRank based on the internal graph generated
    * by the {@link prepare} function, and stores the PageRank to be used for

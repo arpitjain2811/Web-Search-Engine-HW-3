@@ -1,13 +1,16 @@
 package edu.nyu.cs.cs2580;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.File;
+import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
-
+import edu.nyu.cs.cs2580.CorpusAnalyzer.HeuristicLinkExtractor;
+import edu.nyu.cs.cs2580.Document.HeuristicDocumentChecker;
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
 /**
@@ -39,21 +42,38 @@ public class LogMinerNumviews extends LogMiner {
     System.out.println("Computing using " + this.getClass().getName());
  
     String logDir = _options._logPrefix;
-    final File Dir = new File(logDir);
+    String corpusDir = _options._corpusPrefix;
+    final File DirCorpus = new File(corpusDir);
+    Document.HeuristicDocumentChecker Checker = new Document.HeuristicDocumentChecker();
+    
+    final File DirLog = new File(logDir);
     BufferedReader reader = null;
     String line = null;
     String[] splitline = null;
-    Document.HeuristicDocumentChecker Checker = new Document.HeuristicDocumentChecker();
-
-    for (final File fileEntry : Dir.listFiles()) {
+    for (final File fileEntry : DirCorpus.listFiles()) {
+        
+        if ( !fileEntry.isDirectory() ) {
+          
+          // dont read hidden files
+          if(fileEntry.isHidden())
+  		      continue;
+  	    
+  	    // Create Extract link object
+  	    HeuristicLinkExtractor f = new HeuristicLinkExtractor(fileEntry);
+  	    
+  	    // Get Main source page link
+  	    Checker.addDoc(f.getLinkSource());
+        }
+    }
+    for (final File logEntry : DirLog.listFiles()) {
       
-      if ( !fileEntry.isDirectory() ) {
+      if ( !logEntry.isDirectory() ) {
         
         // dont read hidden files
-        if(fileEntry.isHidden())
+        if(logEntry.isHidden())
           continue;
 
-        reader = new BufferedReader(new FileReader(fileEntry));
+        reader = new BufferedReader(new FileReader(logEntry));
         while ((line = reader.readLine()) != null) {
           splitline = line.split("\\s+");
           if (splitline.length == 3 && Checker.checkDoc(splitline[1])) {
@@ -64,6 +84,19 @@ public class LogMinerNumviews extends LogMiner {
         }
       }
     }
+    
+    String indexFile = _options._indexPrefix + "/numviews.idx";
+    System.out.println("Store Numviews to: " + indexFile);
+    ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
+
+    try {
+        writer.writeObject(this);
+        writer.close();
+      }
+      catch(Exception e) {
+        System.out.println(e.toString());
+      }
+    
     return;
   }
 
