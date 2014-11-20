@@ -2,6 +2,7 @@ package edu.nyu.cs.cs2580;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
 
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
