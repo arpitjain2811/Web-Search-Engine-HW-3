@@ -57,7 +57,6 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 
     System.out.println("Extracting Links");
     for (final File fileEntry : Dir.listFiles()) {	
-	num_docs += 1;		
 	if ( !fileEntry.isDirectory() ) {
 	    // dont read hidden files
 	    if(fileEntry.isHidden())
@@ -78,6 +77,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
 	    HashSet<String> linkSet = new HashSet<String>(linkList);
 	    linksource.put(link_name, linkSet);
 	    _linkHash.put(link_name, num_docs);
+	    num_docs += 1;		
 	}
 	if (num_docs >1000)
 	    break;
@@ -122,45 +122,30 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer {
     System.out.println("Computing using " + this.getClass().getName());
     
     int nnodes = _linkGraph.keySet().size();
+    float init = (float) (1 - _options._lambda)/nnodes;
     ArrayList<Float> ranks = new ArrayList<Float>( Collections.nCopies(nnodes, (float) .5) );
-    ArrayList<Float> new_ranks = new ArrayList<Float>(nnodes); 
-    float init = (float) (1 - _options._alpha)/nnodes;
+    ArrayList<Float> new_ranks = new ArrayList<Float>( Collections.nCopies(nnodes, init) ); 
 
     for (int iters = 0; iters < _options._iterations; iters++) {
-
-	for (int i = 0; i < new_ranks.size(); i++)
+    
+	for (int i = 0; i < nnodes; i++) 
 	    new_ranks.set(i, init);
 	
 	for (Integer node : _linkGraph.keySet()) {
 	    HashSet<Integer> links = _linkGraph.get(node);
-	    float distribute_rank = (float) _options._alpha * (ranks.get(node)) / links.size();
+	    float distribute_rank = (float) _options._lambda * (ranks.get(node)) / links.size();	    
 	    for (Integer link : links) {
 		float tmp = new_ranks.get(link);
 		new_ranks.set(link, tmp + distribute_rank);	
-		System.out.print(new_ranks.get(link));
 	    }
 	}
 	ranks = new_ranks;
     }
+    
+    //    for (int i = 0; i < ranks.size(); i++)
+    //	System.out.println(ranks.get(i));
+    
 
-    /*
-    Map<Integer, HashSet<Integer>> Graph = new HashMap<Integer, HashSet<Integer> >(_linkGraph);
-    for (Integer keys: Graph.keySet())
-    {
-    	int no_links = (Graph.get(keys).size());
-    	int total_links = (Graph.size());
-    	double alpha = 0.7;
-	double PageRank = (1.0 - alpha)*((total_links - no_links)*1.0)*(1/(total_links*1.0));
-	System.out.println(PageRank);
-	if (no_links >0)
-	{
-		PageRank += no_links*(alpha/(no_links*1.0) + (1.0 - alpha)*(1/(total_links*1.0)));
-	}
-	
-    	_pgRank.put(keys, PageRank);   	
-    }
-    System.out.println(_pgRank);
-    */
     return;
   }
 
