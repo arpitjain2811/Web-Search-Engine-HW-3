@@ -12,12 +12,12 @@ import java.util.HashMap;
 import edu.nyu.cs.cs2580.CorpusAnalyzer.HeuristicLinkExtractor;
 import edu.nyu.cs.cs2580.Document.HeuristicDocumentChecker;
 import edu.nyu.cs.cs2580.SearchEngine.Options;
-
+import java.io.Serializable;
 /**
  * @CS2580: Implement this class for HW3.
  */
-public class LogMinerNumviews extends LogMiner {
-
+public class LogMinerNumviews extends LogMiner implements Serializable { 
+  private static final long serialVersionUID = 467974245689L;
   private HashMap<String, Integer> _numViews = new HashMap<String, Integer>();
 
   public LogMinerNumviews(Options options) {
@@ -81,7 +81,7 @@ public class LogMinerNumviews extends LogMiner {
 
 	    
           if (splitline.length >=2 && Checker.checkDoc(splitline[1]) && splitline.length <=3) {
-            System.out.println(splitline[1] + " " + splitline[2]);
+            //System.out.println(splitline[1] + " " + splitline[2]);
             if(splitline.length ==2)
             	 _numViews.put(splitline[1],0);
             else
@@ -96,15 +96,16 @@ public class LogMinerNumviews extends LogMiner {
             	parse=false;
             }
             if(parse)
+	    {
             _numViews.put(splitline[1],num );
-            
+            }
             }
           }
         }
       }
     }
-    
-    String indexFile = _options._indexPrefix + "/numviews.idx";
+    System.out.println(_numViews);     
+    String indexFile =  "numviews.idx";
     System.out.println("Store Numviews to: " + indexFile);
     ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
 
