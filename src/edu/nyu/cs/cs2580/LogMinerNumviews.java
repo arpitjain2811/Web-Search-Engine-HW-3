@@ -59,6 +59,7 @@ public class LogMinerNumviews extends LogMiner {
           if (splitline.length == 3 && Checker.checkDoc(splitline[1])) {
             System.out.println(splitline[1] + " " + splitline[2]);
             _numViews.put(splitline[1], Integer.parseInt(splitline[2]));
+	    System.out.println(_numViews.keySet());
           }
         }
       }

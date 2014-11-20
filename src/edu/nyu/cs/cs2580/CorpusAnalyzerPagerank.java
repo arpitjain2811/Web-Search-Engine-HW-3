@@ -97,8 +97,8 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
 
     }
     num_docs++;
-//    if (num_docs >1000)
-  //    break;
+    if (num_docs >100)
+      break;
   }
 
   // Create a local map variable (efficient to iterate over)
@@ -166,17 +166,19 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
       }
       // update the pageranks and repeat
       ranks = new_ranks;
+      //System.out.println(ranks);
     }
 
     for(String page : _linkHash.keySet())
       _ranked_docs.put(page, ranks.get(_linkHash.get(page)));
-
+     	
     new_ranks = null;
     ranks = null;
     _linkHash = null;
     _linkGraph = null;
 
-    String indexFile = _options._indexPrefix + "/pageranks.idx";
+    //String indexFile = _options._indexPrefix + "/pageranks.idx";
+    String indexFile = "pageranks.idx";
     System.out.println("Store PageRanks to: " + indexFile);
     ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
 
@@ -187,7 +189,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
     catch(Exception e) {
       System.out.println(e.toString());
     }
-
+   
     return;
   }
 
