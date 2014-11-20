@@ -82,14 +82,16 @@ public class LogMinerNumviews extends LogMiner {
             	 _numViews.put(splitline[1],0);
             else
             {
-            int num;
+            int num = 0;
+            boolean parse=true;
             try{
             	num=Integer.parseInt(splitline[2]);
             }
-            catch(Exception e)
+            catch(NumberFormatException e)
             {
-            	continue;
+            	parse=false;
             }
+            if(parse)
             _numViews.put(splitline[1],num );
             
             }
