@@ -7,12 +7,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.HashSet;
 import java.util.Map;
+
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
 /**
@@ -50,11 +52,12 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
    * @throws IOException
    */
   @Override
-  public void prepare() throws IOException {
+  public void prepare() throws IOException, NoSuchAlgorithmException  {
     System.out.println("Preparing " + this.getClass().getName());
     
     String corpusDir = _options._corpusPrefix;
     final File Dir = new File(corpusDir);
+    Document.HeuristicDocumentChecker Checker = new Document.HeuristicDocumentChecker();
      
     String link_name;
     String corresponding_links;
@@ -84,6 +87,8 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
 	    HashSet<String> linkSet = new HashSet<String>(linkList);
 	    linksource.put(link_name, linkSet);
 	    _linkHash.put(link_name, num_docs);
+
+      Checker.addDoc(link_name);
 
 //       Document doc = new Document(_ranked_docs.size());
 //       doc.setTitle(link_name);

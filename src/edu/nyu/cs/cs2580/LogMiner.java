@@ -1,6 +1,7 @@
 package edu.nyu.cs.cs2580;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
@@ -23,7 +24,7 @@ public abstract class LogMiner {
 
   // Computes the desired measure based on the log and store the results to be
   // used by the load function below.
-  public abstract void compute() throws IOException;
+  public abstract void compute() throws IOException, NoSuchAlgorithmException;
 
   // Loads the stored mining results computed by the compute function above.
   // Called during indexing mode.

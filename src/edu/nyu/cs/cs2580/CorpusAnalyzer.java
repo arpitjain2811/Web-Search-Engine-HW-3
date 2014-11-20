@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.security.NoSuchAlgorithmException;
 
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
@@ -95,7 +96,7 @@ public abstract class CorpusAnalyzer {
   
   // Processes the corpus and prepare necessary internal data structure for the
   // compute function below.
-  public abstract void prepare() throws IOException;
+  public abstract void prepare() throws IOException, NoSuchAlgorithmException;
 
   // Computes the desired measure based on the internal data structure created
   // by the prepare function above. Store the results to be used by Indexer in
