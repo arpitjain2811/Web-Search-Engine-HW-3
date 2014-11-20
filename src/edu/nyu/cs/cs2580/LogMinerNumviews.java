@@ -75,7 +75,7 @@ public class LogMinerNumviews extends LogMiner {
 
         reader = new BufferedReader(new FileReader(logEntry));
         while ((line = reader.readLine()) != null) {
-          splitline = line.split("\\s+");
+          splitline = line.split(" ");
           if (splitline.length == 3 && Checker.checkDoc(splitline[1])) {
             System.out.println(splitline[1] + " " + splitline[2]);
             _numViews.put(splitline[1], Integer.parseInt(splitline[2]));
