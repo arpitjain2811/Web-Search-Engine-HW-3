@@ -58,7 +58,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
     
     String corpusDir = _options._corpusPrefix;
     final File Dir = new File(corpusDir);
-    Document.HeuristicDocumentChecker Checker = new Document.HeuristicDocumentChecker();
+    //Document.HeuristicDocumentChecker Checker = new Document.HeuristicDocumentChecker();
      
     String link_name;
     String corresponding_links;
@@ -89,7 +89,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
 	    linksource.put(link_name, linkSet);
 	    _linkHash.put(link_name, num_docs);
 
-      Checker.addDoc(link_name);
+      //Checker.addDoc(link_name);
 
 //       Document doc = new Document(_ranked_docs.size());
 //       doc.setTitle(link_name);
@@ -97,11 +97,9 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
 //       _ranked_docs.add(doc);
 
     }
-    num_docs++;
-    if (num_docs >100)
-      break;
+    
   }
-
+  System.out.println(_linkHash.size());
   // Create a local map variable (efficient to iterate over)
   System.out.println("Creating Graph");
   // Iterate over Map keys

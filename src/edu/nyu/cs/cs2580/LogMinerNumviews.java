@@ -49,6 +49,7 @@ public class LogMinerNumviews extends LogMiner {
     final File DirLog = new File(logDir);
     BufferedReader reader = null;
     String line = null;
+    int num_docs=0;
     String[] splitline = null;
     for (final File fileEntry : DirCorpus.listFiles()) {
         
@@ -64,6 +65,7 @@ public class LogMinerNumviews extends LogMiner {
   	    // Get Main source page link
   	    Checker.addDoc(f.getLinkSource());
         }
+	
     }
     for (final File logEntry : DirLog.listFiles()) {
       
@@ -77,9 +79,9 @@ public class LogMinerNumviews extends LogMiner {
         while ((line = reader.readLine()) != null) {
           splitline = line.split("\\s+");
           if (splitline.length == 3 && Checker.checkDoc(splitline[1])) {
-            System.out.println(splitline[1] + " " + splitline[2]);
+            //System.out.println(splitline[1] + " " + splitline[2]);
             _numViews.put(splitline[1], Integer.parseInt(splitline[2]));
-	    System.out.println(_numViews.keySet());
+	    
           }
         }
       }
