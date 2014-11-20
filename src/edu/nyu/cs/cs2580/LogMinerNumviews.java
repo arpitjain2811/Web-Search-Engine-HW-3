@@ -78,12 +78,8 @@ public class LogMinerNumviews extends LogMiner {
         reader = new BufferedReader(new FileReader(logEntry));
         while ((line = reader.readLine()) != null) {
           splitline = line.split(" ");
-<<<<<<< HEAD
-          if (splitline.length == 3 && Checker.checkDoc(splitline[1])) {
-            //System.out.println(splitline[1] + " " + splitline[2]);
-            _numViews.put(splitline[1], Integer.parseInt(splitline[2]));
+
 	    
-=======
           if (splitline.length >=2 && Checker.checkDoc(splitline[1]) && splitline.length <=3) {
             System.out.println(splitline[1] + " " + splitline[2]);
             if(splitline.length ==2)
@@ -101,7 +97,6 @@ public class LogMinerNumviews extends LogMiner {
             _numViews.put(splitline[1],num );
             
             }
->>>>>>> 80c0f6704701fb5425102851a61b928a6d6f909a
           }
         }
       }
