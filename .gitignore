@@ -2,4 +2,6 @@
 *.class
 *~
 *.idx
-/data/
+data/
+./data
+.*
