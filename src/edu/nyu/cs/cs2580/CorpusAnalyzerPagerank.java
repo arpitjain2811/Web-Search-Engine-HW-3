@@ -175,7 +175,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
     _linkHash = null;
     _linkGraph = null;
 
-    String indexFile = _options._indexPrefix + "/pageranks.idx";
+    String indexFile = "pageranks.idx";
     System.out.println("Store PageRanks to: " + indexFile);
     ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
 
@@ -199,6 +199,22 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
   @Override
   public Object load() throws IOException {
     System.out.println("Loading using " + this.getClass().getName());
+
+    String indexFile = "pageranks.idx";
+    System.out.println("Load PageRanks from: " + indexFile);
+
+    // read in the index file
+    ObjectInputStream reader = new ObjectInputStream(new FileInputStream(indexFile));
+    CorpusAnalyzerPagerank loaded = (CorpusAnalyzerPagerank) reader.readObject();
+  
+    this._ranked_docs = loaded._ranked_docs;
+    loaded = null;
+
     return null;
   }
+
+  public Integer getPagerank(String doc) {
+    return _ranked_docs.containsKey(doc) ? _ranked_docs.get(doc) : 0;
+  }
+
 }

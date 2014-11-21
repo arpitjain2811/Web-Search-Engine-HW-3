@@ -105,7 +105,7 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
       }
     }
     System.out.println(_numViews);     
-    String indexFile =  _options._indexPrefix + "numviews.idx";
+    String indexFile = "numviews.idx";
     System.out.println("Store Numviews to: " + indexFile);
     ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
 
@@ -129,6 +129,17 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
   @Override
   public Object load() throws IOException {
     System.out.println("Loading using " + this.getClass().getName());
+
+    String indexFile = "numviews.idx";
+    System.out.println("Load Numviews from: " + indexFile);
+
+    // read in the index file
+    ObjectInputStream reader = new ObjectInputStream(new FileInputStream(indexFile));
+    CorpusAnalyzerPagerank loaded = (CorpusAnalyzerPagerank) reader.readObject();
+  
+    this._numViews = loaded._numViews;
+    loaded = null;
+    
     return null;
   }
 }
