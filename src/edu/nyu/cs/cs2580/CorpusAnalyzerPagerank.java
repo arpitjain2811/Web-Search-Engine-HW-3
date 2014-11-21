@@ -175,8 +175,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
     _linkHash = null;
     _linkGraph = null;
 
-    //String indexFile = _options._indexPrefix + "/pageranks.idx";
-    String indexFile = "pageranks.idx";
+    String indexFile = _options._indexPrefix + "/pageranks.idx";
     System.out.println("Store PageRanks to: " + indexFile);
     ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
 

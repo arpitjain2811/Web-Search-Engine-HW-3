@@ -105,7 +105,7 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
       }
     }
     System.out.println(_numViews);     
-    String indexFile =  "numviews.idx";
+    String indexFile =  _options._indexPrefix + "numviews.idx";
     System.out.println("Store Numviews to: " + indexFile);
     ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
 
