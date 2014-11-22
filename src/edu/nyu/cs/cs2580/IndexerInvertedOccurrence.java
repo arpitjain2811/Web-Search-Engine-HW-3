@@ -17,6 +17,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
+import com.google.common.collect.HashBiMap;
 
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
@@ -45,7 +46,7 @@ public class IndexerInvertedOccurrence extends Indexer implements Serializable {
     private HashMap<Integer,Vector<Integer>> _skip_pointer=new HashMap<Integer,Vector<Integer>>();
     private HashMap<Integer,Vector<Integer>> _term_list=new HashMap<Integer,Vector<Integer>>();
     
-    public IndexerInvertedOccurrence(Options options) {
+    public IndexerInvertedOccurrence(Options options) throws IOException, ClassNotFoundException {
 	super(options);
 	System.out.println("Using Indexer: " + this.getClass().getSimpleName());
     }
@@ -585,4 +586,10 @@ Vector<Integer> Pt=_postings.get(_dictionary.get(token));
   	}
     return 0;
   }
+
+@Override
+public HashBiMap<String, Integer> getDict() {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

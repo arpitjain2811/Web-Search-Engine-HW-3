@@ -20,6 +20,8 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
+import com.google.common.collect.HashBiMap;
+
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
 /**
@@ -42,7 +44,7 @@ public class IndexerInvertedDoconly extends Indexer implements Serializable {
 	private Map<String, Integer> cache = new HashMap<String, Integer>();
 	private Integer c_t = -1;
 	
-  public IndexerInvertedDoconly(Options options) {
+  public IndexerInvertedDoconly(Options options) throws IOException, ClassNotFoundException {
     super(options);
     System.out.println("Using Indexer: " + this.getClass().getSimpleName());
   }
@@ -395,4 +397,10 @@ public class IndexerInvertedDoconly extends Indexer implements Serializable {
   	// right now only docs that contain every query word are retrieved, so okay for now
     return 1;
   }
+
+@Override
+public HashBiMap<String, Integer> getDict() {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

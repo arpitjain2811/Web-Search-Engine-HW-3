@@ -75,6 +75,10 @@ public class SearchEngine {
     // The specific LogMiner to be used.
     public String _logMinerType = null;
 
+    // Number of top occurring words to keep from each document
+    public Integer _keepTerms = null;
+
+
     // Additional group specific configuration can be added below.
 
     /**
@@ -127,6 +131,10 @@ public class SearchEngine {
 
       _logMinerType = options.get("log_miner_type");
       Check(_logMinerType != null, "Missing option: log_miner_type!");
+
+      _keepTerms = Integer.valueOf( options.get("keepTerms") );
+      Check(_keepTerms != null, 
+      "Missing option: keepTerms");
     }
   }
   public static Options OPTIONS = null;
@@ -197,7 +205,7 @@ public class SearchEngine {
     return;
   }
   
-  private static void startIndexing() throws IOException {
+  private static void startIndexing() throws IOException, ClassNotFoundException {
     Indexer indexer = Indexer.Factory.getIndexerByOption(SearchEngine.OPTIONS);
     Check(indexer != null,
         "Indexer " + SearchEngine.OPTIONS._indexerType + " not found!");

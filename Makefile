@@ -1,9 +1,9 @@
 JCC = javac
 JVM = java
-JFLAGS = -classpath jsoup-1.8.1.jar
-INDEXFLAGS = -classpath "jsoup-1.8.1.jar:src" 
-RUNFLAGS = -classpath "jsoup-1.8.1.jar:src" -Xmx512m
-MININGFLAGS = -classpath "jsoup-1.8.1.jar:src"
+JFLAGS = -classpath "library/*"
+INDEXFLAGS = -classpath "src:library/*" 
+RUNFLAGS = -classpath "src:library/*" -Xmx512m
+MININGFLAGS = -classpath "src:library/*"
 
 .java.class:
 	$(JCC) $(JFLAGS) $*.java
@@ -30,6 +30,8 @@ CLASSES = \
 	src/edu/nyu/cs/cs2580/IndexerInvertedCompressed.java \
 	src/edu/nyu/cs/cs2580/RankerConjunctive.java \
 	src/edu/nyu/cs/cs2580/Stemmer.java \
+	src/edu/nyu/cs/cs2580/Spearman.java \
+	src/edu/nyu/cs/cs2580/Bhattacharyya.java \
 
 
 default:
@@ -43,6 +45,12 @@ index:
 
 run:
 	$(JVM) $(RUNFLAGS) edu.nyu.cs.cs2580.SearchEngine --mode=serve --port=25808 --options=conf/engine.conf 
+
+spearman:
+	$(JVM) $(RUNFLAGS) edu.nyu.cs.cs2580.Spearman
+
+bhatta:
+	$(JVM) $(RUNFLAGS) edu.nyu.cs.cs2580.Bhattacharyya prf/ outputs/ 	  
 
 clean:
 	find . -name '*.class' -exec rm -rf {} \;

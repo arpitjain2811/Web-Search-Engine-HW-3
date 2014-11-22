@@ -1,5 +1,7 @@
 package edu.nyu.cs.cs2580;
 
+import com.google.common.collect.HashBiMap;
+
 import java.io.IOException;
 
 import edu.nyu.cs.cs2580.SearchEngine.Options;
@@ -36,15 +38,18 @@ public abstract class Indexer {
   // Subclasses should populate those fields properly.
   protected int _numDocs = 0;
   protected long _totalTermFrequency = 0;
-
+  
   // Provided for serialization.
   public Indexer() { }
 
   // The real constructor
-  public Indexer(Options options) {
+  public Indexer(Options options) throws IOException, ClassNotFoundException {
     _options = options;
     _corpusAnalyzer = CorpusAnalyzer.Factory.getCorpusAnalyzerByOption(options);
+		_corpusAnalyzer.load();
+
     _logMiner = LogMiner.Factory.getLogMinerByOption(options);
+		_logMiner.load();
   }
 
   // APIs for document retrieval.
@@ -139,7 +144,7 @@ public abstract class Indexer {
    * provided {@code options}.
    */
   public static class Factory {
-    public static Indexer getIndexerByOption(Options options) {
+    public static Indexer getIndexerByOption(Options options) throws IOException, ClassNotFoundException {
       if (options._indexerType.equals("fullscan")) {
         return new IndexerFullScan(options);
       } else if (options._indexerType.equals("inverted-doconly")) {
@@ -152,4 +157,7 @@ public abstract class Indexer {
       return null;
     }
   }
+
+public abstract HashBiMap<String, Integer> getDict();
+
 }

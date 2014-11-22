@@ -11,15 +11,17 @@ class ScoredDocument implements Comparable<ScoredDocument> {
   private double _score;
 
   public ScoredDocument(Document doc, double score) {
-    _doc = doc;
+    set_doc(doc);
     _score = score;
   }
 
   public String asTextResult() {
     StringBuffer buf = new StringBuffer();
-    buf.append(_doc._docid).append("\t");
-    buf.append(_doc.getTitle()).append("\t");
-    buf.append(_score);
+    buf.append(get_doc()._docid).append("\t");
+    buf.append(get_doc().getTitle()).append("\t");
+    buf.append(_score).append("\t");
+    buf.append(get_doc().getPageRank()).append("\t");
+    buf.append(get_doc().getNumViews()).append("\t");
     return buf.toString();
   }
 
@@ -37,4 +39,12 @@ class ScoredDocument implements Comparable<ScoredDocument> {
     }
     return (this._score > o._score) ? 1 : -1;
   }
+
+public Document get_doc() {
+	return _doc;
+}
+
+public void set_doc(Document _doc) {
+	this._doc = _doc;
+}
 }

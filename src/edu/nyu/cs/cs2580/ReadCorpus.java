@@ -46,7 +46,7 @@ public class ReadCorpus {
 	String html = readFile(filename);
 	Document doc = Jsoup.parse(html);
 
-	out.append(filename.getName().replace("_", " "));
+	out.append(filename.getName());
 	out.append('\t');
 	
 	body.append( getTagText(doc, "h1"));

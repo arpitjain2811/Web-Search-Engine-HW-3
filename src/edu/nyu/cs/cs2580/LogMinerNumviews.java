@@ -1,10 +1,12 @@
 package edu.nyu.cs.cs2580;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.File;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -12,6 +14,7 @@ import java.util.HashMap;
 import edu.nyu.cs.cs2580.CorpusAnalyzer.HeuristicLinkExtractor;
 import edu.nyu.cs.cs2580.Document.HeuristicDocumentChecker;
 import edu.nyu.cs.cs2580.SearchEngine.Options;
+
 import java.io.Serializable;
 /**
  * @CS2580: Implement this class for HW3.
@@ -63,13 +66,20 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
   	    HeuristicLinkExtractor f = new HeuristicLinkExtractor(fileEntry);
   	    
   	    // Get Main source page link
-  	    Checker.addDoc(f.getLinkSource());
+  	    Checker.addDoc(f.getLinkSource().toLowerCase());
+  	    
+        if(! _numViews.containsKey(f.getLinkSource().toLowerCase()))
+       	{
+       		 _numViews.put(f.getLinkSource().toLowerCase(),0);
+       	}
+  	    
+  	    
         }
 	
     }
     for (final File logEntry : DirLog.listFiles()) {
       
-      if ( !logEntry.isDirectory() ) {
+      if ( !logEntry.isDirectory()) {
         
         // dont read hidden files
         if(logEntry.isHidden())
@@ -79,11 +89,17 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
         while ((line = reader.readLine()) != null) {
           splitline = line.split(" ");
 
-	    
-          if (splitline.length >=2 && Checker.checkDoc(splitline[1]) && splitline.length <=3) {
-            //System.out.println(splitline[1] + " " + splitline[2]);
+   
+          
+          if (splitline.length >=2 && Checker.checkDoc(splitline[1].toLowerCase()) && splitline.length <=3)
+          {
+        	
+        	  
             if(splitline.length ==2)
-            	 _numViews.put(splitline[1],0);
+            {
+            
+            	  _numViews.put(splitline[1].toLowerCase(), _numViews.get(splitline[1].toLowerCase())+0);
+            }
             else
             {
             int num = 0;
@@ -97,14 +113,15 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
             }
             if(parse)
 	    {
-            _numViews.put(splitline[1],num );
-            }
+           _numViews.put(splitline[1].toLowerCase(),_numViews.get(splitline[1].toLowerCase())+num );
+        }
             }
           }
         }
       }
     }
-    System.out.println(_numViews);     
+    //    System.out.println(get_numViews().get("somebody_that_i_used_to_know"));
+    System.out.println(get_numViews().size());     
     String indexFile = "numviews.idx";
     System.out.println("Store Numviews to: " + indexFile);
     ObjectOutputStream writer = new ObjectOutputStream(new FileOutputStream(indexFile));
@@ -127,7 +144,7 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
    * @throws IOException
    */
   @Override
-  public Object load() throws IOException {
+  public Object load() throws IOException,ClassNotFoundException {
     System.out.println("Loading using " + this.getClass().getName());
 
     String indexFile = "numviews.idx";
@@ -135,11 +152,28 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
 
     // read in the index file
     ObjectInputStream reader = new ObjectInputStream(new FileInputStream(indexFile));
-    CorpusAnalyzerPagerank loaded = (CorpusAnalyzerPagerank) reader.readObject();
+	LogMinerNumviews loaded = (LogMinerNumviews) reader.readObject();
+	
+	System.out.println("Loaded Numiews");
   
-    this._numViews = loaded._numViews;
+    this._numViews=loaded._numViews;
     loaded = null;
     
     return null;
   }
+  public Integer getNumviews(String doc) {
+
+	//System.out.println(doc);
+    return  (_numViews.get(doc));
+
+  }
+
+public HashMap<String, Integer> get_numViews() {
+	return _numViews;
+}
+
+public void set_numViews(HashMap<String, Integer> _numViews) {
+	this._numViews = _numViews;
+}
+
 }

@@ -19,6 +19,8 @@ public abstract class LogMiner {
   // Options to configure each concrete LogMiner.
   protected Options _options = null;
   
+  public LogMiner(){}
+  
   public LogMiner(Options options) {
     _options = options;
   }
@@ -29,7 +31,7 @@ public abstract class LogMiner {
 
   // Loads the stored mining results computed by the compute function above.
   // Called during indexing mode.
-  public abstract Object load() throws IOException;
+  public abstract Object load() throws IOException, ClassNotFoundException;
 
   /**
    * All LogMiners must be created through this factory class based on
@@ -40,6 +42,7 @@ public abstract class LogMiner {
       if (options._logMinerType.equals("numviews")) {
         return new LogMinerNumviews(options);
       }
+      
       return null;
     }
   }

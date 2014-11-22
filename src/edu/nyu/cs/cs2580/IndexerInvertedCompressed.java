@@ -17,7 +17,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
@@ -26,9 +32,27 @@ import edu.nyu.cs.cs2580.SearchEngine.Options;
  */
 public class IndexerInvertedCompressed extends Indexer implements Serializable {
 
-	 private static final long serialVersionUID = 1626440145434710491L;
+  public class Tuple<T, R> {
+    private T first;
+    private R second;
+
+    public Tuple(T t, R r) {
+      this.first = t;
+      this.second = r;
+    }
+    public T getFirst() {
+      return first;
+    }
+    public R getSecond() {
+      return second;
+    }
+
+  }
+	
+   private static final long serialVersionUID = 1626440145434710491L;
 	    
-	    private Map<String, Integer> _dictionary = new HashMap<String, Integer>();
+  
+	    private HashBiMap<String, Integer> _dictionary = HashBiMap.create();
 	    private Map<String, Vector<Integer>> _decoded = new HashMap<String, Vector<Integer>>();
 	    private HashMap<Integer, Integer> elias = new HashMap<Integer,Integer>();
 	    private HashMap<Integer, BitSet > _postings=new HashMap<Integer,BitSet>();
@@ -45,7 +69,7 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	    private HashMap<Integer,Vector<Integer>> _term_list=new HashMap<Integer,Vector<Integer>>();
 	    
 	
-  public IndexerInvertedCompressed(Options options) {
+  public IndexerInvertedCompressed(Options options) throws IOException, ClassNotFoundException {
     super(options);
     System.out.println("Using Indexer: " + this.getClass().getSimpleName());
   }
@@ -69,12 +93,12 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	    
 	      // special case for testing with corpus.tsv
 	      if (fileEntry.getName().endsWith("corpus.tsv") ) {
-		  System.out.println(fileEntry.getName());
+		  //System.out.println(fileEntry.getName());
 		  BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
 		  try {
 		      String line = null;
 		      while ((line = reader.readLine()) != null) {
-			  System.out.println("Document" + n_doc);
+			  //System.out.println("Document" + n_doc);
 			  line = DocReader.createFileInput(line);
 			  processDocument(line);
 			  _term_position.clear();
@@ -87,7 +111,7 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 		  }
 	      }
 	      else {
-		  System.out.println(n_doc + "   " + fileEntry.getName());
+		  //System.out.println(n_doc + "   " + fileEntry.getName());
 		  
 		  n_doc++;
 		  String nextDoc = DocReader.createFileInput(fileEntry);
@@ -124,7 +148,7 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 			   "Indexed " + Integer.toString(_numDocs) + " docs with " +
 			   Long.toString(_totalTermFrequency) + " terms.");
 	
-	String indexFile = _options._indexPrefix + "/corpus.idx";
+	String indexFile = _options._indexPrefix +"/corpus.idx";
 	System.out.println("Store index to: " + indexFile);
 	ObjectOutputStream writer =
 	    new ObjectOutputStream(new FileOutputStream(indexFile));
@@ -195,14 +219,6 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
     		
     		r= (int) (symbol - Math.pow(2, d));
     		
-    		
-//    		System.out.println(idx);
-//    		System.out.println(b.size());
-//    		System.out.println("D: " +d);
-//    		System.out.println("R: " +r);
-    		
-    		//System.out.println("Symbol: " +symbol);
-    		
     		b.set(idx, idx+d);
     		
     		idx=idx+d;
@@ -241,6 +257,54 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	return b;
 }
 
+    
+    private Tuple<BitSet, Integer> elias_encode(Vector<Integer> posting) {
+  // TODO Auto-generated method stub
+      
+      BitSet b=new BitSet();
+      int symbol;
+      int d;
+      int r;
+      int idx=0;
+      
+      for(int i=0;i<posting.size();i++)
+      {
+        
+        symbol=posting.get(i);
+        symbol++;
+        
+        d= (int) (Math.log(symbol)/Math.log(2));  
+        r= (int) (symbol - Math.pow(2, d));
+        
+        b.set(idx, idx+d);
+        
+        idx=idx+d;
+        
+        b.set(idx, false);
+        
+        idx=idx+1;
+        
+        for(int j=d-1;j>=0;j--)
+        {
+          
+          if(r-Math.pow(2, j)>=0)
+          {
+            b.set(idx);
+            idx=idx+1;
+            r=(int) (r-Math.pow(2, j));
+          }
+          else
+          {
+            b.set(idx,false);
+            
+            idx=idx+1;
+            
+          }
+        }
+      }
+      
+  return new Tuple<BitSet, Integer>(b, idx);
+}
 
 
 	private Vector<Integer> update_skip(Vector<Integer> skip, int size) {
@@ -255,18 +319,19 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	return skip;
     }
     
-    private void processDocument(String content) {
+  private void processDocument(String content) {
 	// TODO Auto-generated method stub
 	
 	Scanner s = new Scanner(content).useDelimiter("\t");
 	Set<Integer> uniqueTerms = new HashSet<Integer>();
+  HashMap<Integer, Integer> document_tf = new HashMap<Integer, Integer>();
 
 	// pass the title 
 	String title = s.next();
-	//readTermVector(title, uniqueTerms);
 	
 	// pass the body
-	readTermVector(s.next(), uniqueTerms);
+	document_tf = readTermVector(s.next(), uniqueTerms);
+  Tuple<BitSet, Integer> doctf_bits = convertToBitSet(document_tf, _options._keepTerms);
 	
 	// get number of views
 	int numViews = Integer.parseInt(s.next());
@@ -275,15 +340,16 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	String url = s.next();
 	
 	s.close();
+
 	
 	// create the document
 	DocumentIndexed doc = new DocumentIndexed(_documents.size());
 	doc.setTitle(title);
-	doc.setNumViews(numViews);
+	doc.setNumViews( ( (LogMinerNumviews)_logMiner).getNumviews(title.toLowerCase()));
+	doc.setPageRank( ( (CorpusAnalyzerPagerank )_corpusAnalyzer).getPagerank(title.toLowerCase()));
 	doc.setUrl(url);
+    doc.saveTopWords(doctf_bits.getFirst(), doctf_bits.getSecond());
 	((DocumentIndexed) doc).removeAll();
-	System.out.println(url);
-
 	// add the document
 	_documents.add(doc); 
 	_numDocs++;
@@ -337,7 +403,7 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
              
             if( positions.get(i)-last<0)
             {
-            	System.out.println(positions.get(i)+ " "+ last + " "+ positions);
+            	//System.out.println(positions.get(i)+ " "+ last + " "+ positions);
             	
             	for(String l:_dictionary.keySet())
             	{
@@ -352,10 +418,12 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
     	return positions;
 	}
 
-	private void readTermVector(String content, Set <Integer> uniques) {
+	private HashMap<Integer, Integer> readTermVector(String content, Set <Integer> uniques) {
 	Scanner s = new Scanner(content);  // Uses white space by default.
 	int pos = -1;
 	Vector<Integer> positions = new Vector<Integer>();
+  HashMap<Integer, Integer> document_tf = new HashMap<Integer, Integer>();
+
 	while (s.hasNext()) {
 		
 	    String token = s.next();
@@ -364,26 +432,30 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	    
 	    // get index from the dictionary or add it
 	    if (!_dictionary.containsKey(token)) {
-		idx = _dictionary.size();
-		_dictionary.put(token, idx);
-		
-	        _termCorpusFrequency.put(idx, 0);
-	        _termDocFrequency.put(idx, 0);
-	
-		// create these things for new word
-		_skip_pointer.put(idx, new Vector<Integer>());
-		_term_list.put(idx, new Vector<Integer>());
-		_term_position.put(idx, new Vector<Integer>());
-		_postings.put(idx,new BitSet());
-	
+		    idx = _dictionary.size();
+		    _dictionary.put(token, idx);
+        
+        _termCorpusFrequency.put(idx, 0);
+        _termDocFrequency.put(idx, 0);
+	       
+    		// create these things for new word
+    		_skip_pointer.put(idx, new Vector<Integer>());
+    		_term_list.put(idx, new Vector<Integer>());
+    		_term_position.put(idx, new Vector<Integer>());
+    		_postings.put(idx,new BitSet());
+    	
 	    } else {
-		idx = _dictionary.get(token);
+		    idx = _dictionary.get(token);
 	    }
 	    
 	    // make sure term is in term_position
 	    if (!_term_position.containsKey(idx)) {
-		_term_position.put(idx, new Vector<Integer>() );
+		    _term_position.put(idx, new Vector<Integer>() );
 	    }
+      
+      if (!document_tf.containsKey(idx)) {
+        document_tf.put(idx, 0);
+      }
 
 
 	    // add position of the term
@@ -396,18 +468,19 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	    
 	    // update stats
 	    _termCorpusFrequency.put(idx, _termCorpusFrequency.get(idx) + 1);
+      document_tf.put(idx, document_tf.get(idx) + 1);
 	    ++_totalTermFrequency;
 
-	    
-	}
-	return;
     }
+
+    return document_tf;
+  }
     
   
     @Override
     public void loadIndex() throws IOException, ClassNotFoundException {
 	
-	String indexFile = _options._indexPrefix + "/corpus.idx";
+	String indexFile = _options._indexPrefix+"/corpus.idx";
 	System.out.println("Load index from: " + indexFile);
 
 	// read in the index file
@@ -431,11 +504,49 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 	this._termCorpusFrequency = loaded._termCorpusFrequency;
 	this._termDocFrequency = loaded._termDocFrequency;
 	this.elias=loaded.elias;
+	//System.out.println("pppp");
+	this._corpusAnalyzer=loaded._corpusAnalyzer;
+	//_corpusAnalyzer.load();
+	this._logMiner=loaded._logMiner;
+	//_logMiner.load();
+	
+	
 	reader.close();
 	loaded=null;
-	System.out.println(Integer.toString(_numDocs) + " documents loaded " +
-			   "with " + Long.toString(_totalTermFrequency) + " terms!"); 
+	//System.out.println(Integer.toString(_numDocs) + " documents loaded " + "with " + Long.toString(_totalTermFrequency) + " terms!"); 
 	
+    }
+
+
+    private Tuple<BitSet, Integer> convertToBitSet(HashMap<Integer, Integer> doc_tf, int nterms) {
+
+      Vector<Integer> word_counts = new Vector<Integer>();
+
+      ArrayList<Tuple<Integer, Integer>> tuples = new ArrayList<Tuple<Integer, Integer>>();
+      for (Integer word : doc_tf.keySet())
+        tuples.add(new Tuple<Integer, Integer>( word, doc_tf.get(word)));
+
+      Comparator< Tuple<Integer, Integer>> comparator = new Comparator<Tuple<Integer, Integer>>() {
+        public int compare(Tuple<Integer, Integer> tupleA, Tuple<Integer, Integer> tupleB) {
+            return tupleB.getSecond().compareTo(tupleA.getSecond());
+        }
+      };
+      Collections.sort(tuples, comparator);
+
+      int count = 0;
+      for(Tuple<Integer, Integer> tuple : tuples) {
+        word_counts.add(tuple.getFirst());
+        word_counts.add(tuple.getSecond());
+        count++;
+        if(count == nterms) break;
+      }
+
+      return elias_encode(word_counts);
+
+    }
+
+    public HashBiMap<String, Integer> getDict(){
+    	return _dictionary;
     }
 
     
@@ -628,9 +739,13 @@ public double NextPhrase(Query query, int docid, int pos) {
 	}
 	
 	if(incr == pos_vec.size())
+		{
+		System.out.println("Query:" + query._tokens);	
+		System.out.println("Positions: " + pos_vec);
 		return pos_vec.get(0);
+		}
 	
-	int next_p=Collections.max(pos_vec).intValue();
+	int next_p=Collections.max(pos_vec).intValue()-1;
 	
 	return NextPhrase(query, docid,next_p ); 
 	
@@ -659,7 +774,7 @@ private Double next_pos(String token, int docid, int pos) {
 	
 	// iterate through position list until you pass current position
 	int i = indx_start;
-	for(; Pt.get(i) < pos; i++);
+	for(; Pt.get(i) <= pos; i++);
 	
 	// return that next position
 	return 1.0 * Pt.get(i);
@@ -746,6 +861,5 @@ private Double next_pos(String token, int docid, int pos) {
   	}
     return 0;
   }
-
 
 }

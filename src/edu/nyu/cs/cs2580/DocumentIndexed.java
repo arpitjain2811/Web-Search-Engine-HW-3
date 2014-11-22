@@ -2,7 +2,9 @@ package edu.nyu.cs.cs2580;
 
 import java.util.Vector;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.io.Serializable;
+import java.util.BitSet;
 
 /**
  * @CS2580: implement this class for HW2 to incorporate any additional
@@ -14,6 +16,8 @@ public class DocumentIndexed extends Document implements Serializable {
     private static HashMap <Integer, Integer> _df = new HashMap<Integer,Integer>();
     private HashMap <Integer, Integer> _doc_tf = new HashMap<Integer,Integer>();
     private HashMap <Integer, Integer> _doc_tfidf = new HashMap<Integer,Integer>();
+    private BitSet _top_words = new BitSet();
+    private Integer _bit_index = null;
     
     public DocumentIndexed(int docid) {
 	super(docid);
@@ -40,6 +44,12 @@ public class DocumentIndexed extends Document implements Serializable {
 
 	return;
     }
+
+    public void saveTopWords(BitSet word_counts, Integer bit_position){
+    	_top_words = word_counts;
+    	_bit_index = bit_position;
+    }
+
 
     public void createTFIDF(int num_docs) {
 	double total = 0.0;
@@ -85,6 +95,59 @@ public class DocumentIndexed extends Document implements Serializable {
 	return _doc_tfidf.containsKey(idx) ? _doc_tfidf.get(idx) / 10.0 : 0.0;
     }
 
+
+    public HashMap<Integer, Integer> getTopWords(int m){
+    	HashMap<Integer, Integer> top_words = new HashMap<Integer, Integer>();
+    	Vector<Integer> word_counts = Elias_decode(_top_words);
+    	for(int i = 0; i < m; i++)
+    		top_words.put(word_counts.get(2 * i), word_counts.get( (2 * i) + 1));
+    	return top_words;
+    }
+
+
+
+	private Vector<Integer> Elias_decode(BitSet b) {
+		 
+		 int start = 0;
+		 int end = 0;
+		 int first_zero;
+		 int d;
+		 int rem = 0;
+		 int k;
+		 
+		 Vector<Integer> pt = new Vector<Integer>();
+		 BitSet r;
+		
+		while( end < _bit_index - 1) {
+			rem = 0;
+			first_zero = b.nextClearBit(start);
+	   		
+			end = first_zero + first_zero - start;
+			
+	   		d = (int) Math.pow(2, first_zero - start);
+	   		
+	   		if( d == 1 )
+	   			rem = 0;
+	   		else {
+		   		r = new BitSet();
+			   	r = b.get(first_zero + 1, end + 1);
+			   	
+			   	int r_size = end - first_zero;
+			   	
+		   		for(int n = 0; n < r_size; n++)
+		   		{
+		   			int myInt = (r.get(n)) ? 1 : 0;
+		   			rem = (int) (rem + Math.pow(2, (r_size-1) - n) * myInt);
+		   		}
+	   		}
+
+	   		k = rem + d;
+	   		k--;
+	   		pt.add(k);
+	   		start = end+1;
+		}
+		return pt;
+	}
 
 }
 

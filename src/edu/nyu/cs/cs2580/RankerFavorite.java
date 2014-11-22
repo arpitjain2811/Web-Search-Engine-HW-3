@@ -43,22 +43,12 @@ class RankerFavorite extends Ranker {
   //  Double pos;
  //   int j;
     while(i != null) {
-      System.out.println("Next Called Doc "+i._docid);
+      	System.out.println("Docid: "+i._docid+ " Title: " + i.getTitle());
       
       
     	  
-    	  all.add(scoreDocument(query, i));
-    	  
-    	  
-      
-      
-      //NExt phrase pos = -
-      // check if returned position is valid
-      	//if invaid then call next doc
-      	//else if valid then score that document and then call next doc
-      
-      
-      i = _indexer.nextDoc(query,i._docid);
+    	all.add(scoreDocument(query, i));
+      	i = _indexer.nextDoc(query,i._docid);
       
 	  
     }
@@ -76,8 +66,9 @@ class RankerFavorite extends Ranker {
 
     double title_score = runquery_title(query, document);
     double cosine_score = runquery_cosine(query, document);
-
-    double score = title_score + cosine_score;
+    double pagerank_score = document.getPageRank();
+    double numviews_score = (double) document.getNumViews();
+    double score = title_score + 2000.0*cosine_score + pagerank_score + numviews_score;
 
     return new ScoredDocument(document, score);
   }
