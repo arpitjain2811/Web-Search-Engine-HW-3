@@ -82,17 +82,19 @@ public class Spearman {
        for (Iterator it = list.iterator(); it.hasNext();)
        {
               Map.Entry<String, Double> entry = (Entry<String, Double>) it.next();
-              if(entry.getValue()==prev)
-              {
-            	  _ranked_docs_transformed.put(entry.getKey(), rank);
-            	  stride++;
-              }
-              else
-              {
-              _ranked_docs_transformed.put(entry.getKey(), rank+stride);
-              rank=rank+stride;
-              stride=1;
-              }
+//              if(entry.getValue()==prev)
+//              {
+//            	  _ranked_docs_transformed.put(entry.getKey(), rank);
+//            	  stride++;
+//              }
+//              else
+//              {
+//              _ranked_docs_transformed.put(entry.getKey(), rank+stride);
+//              rank=rank+stride;
+//              stride=1;
+//              }
+              _ranked_docs_transformed.put(entry.getKey(), rank+1);
+              
               
               prev=entry.getValue();
        }
@@ -116,17 +118,19 @@ public class Spearman {
        for (Iterator it = list.iterator(); it.hasNext();) {
               Map.Entry<String, Integer> entry = (Entry<String, Integer>) it.next();
               
-              if(entry.getValue()==prev)
-              {
-            	  _numViews_transformed.put(entry.getKey(), rank);
-            	  stride++;
-              }
-              else
-              {
-              _numViews_transformed.put(entry.getKey(), rank+stride);
-              rank=rank+stride;
-              stride=1;
-              }
+//              if(entry.getValue()==prev)
+//              {
+//            	  _numViews_transformed.put(entry.getKey(), rank);
+//            	  stride++;
+//              }
+//              else
+//              {
+//              _numViews_transformed.put(entry.getKey(), rank+stride);
+//              rank=rank+stride;
+//              stride=1;
+//              }
+              
+              _numViews_transformed.put(entry.getKey(), rank+1);
               prev=entry.getValue();
        }
 	}
