@@ -12,7 +12,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import edu.nyu.cs.cs2580.CorpusAnalyzer.HeuristicLinkExtractor;
-import edu.nyu.cs.cs2580.Document.HeuristicDocumentChecker;
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
 import java.io.Serializable;
@@ -52,13 +51,11 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
     final File DirLog = new File(logDir);
     BufferedReader reader = null;
     String line = null;
-    int num_docs=0;
     String[] splitline = null;
     for (final File fileEntry : DirCorpus.listFiles()) {
         
         if ( !fileEntry.isDirectory() ) {
           
-          // dont read hidden files
           if(fileEntry.isHidden())
   		      continue;
   	    
@@ -90,7 +87,6 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
           splitline = line.split(" ");
 
    
-          
           if (splitline.length >=2 && Checker.checkDoc(splitline[1].toLowerCase()) && splitline.length <=3)
           {
         	
@@ -133,7 +129,7 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
       catch(Exception e) {
         System.out.println(e.toString());
       }
-    
+    reader.close();
     return;
   }
 
@@ -158,7 +154,7 @@ public class LogMinerNumviews extends LogMiner implements Serializable {
   
     this._numViews=loaded._numViews;
     loaded = null;
-    
+    reader.close();
     return null;
   }
   public Integer getNumviews(String doc) {

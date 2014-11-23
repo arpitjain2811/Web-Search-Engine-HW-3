@@ -40,11 +40,15 @@ class ScoredDocument implements Comparable<ScoredDocument> {
     return (this._score > o._score) ? 1 : -1;
   }
 
-public Document get_doc() {
-	return _doc;
-}
+  public Document get_doc() {
+	 return _doc;
+  }
 
-public void set_doc(Document _doc) {
-	this._doc = _doc;
-}
+  public void set_doc(Document _doc) {
+	 this._doc = _doc;
+  }
+
+  public void updateScore(double additional){
+    _score += additional;
+  }
 }

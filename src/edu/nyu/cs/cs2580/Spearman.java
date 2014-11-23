@@ -143,7 +143,7 @@ public class Spearman {
 		}
 		
 		z=z/n;
-		Double f1 = 0.0,f2=0.0,f3=0.0,f4=0.0;
+		Double f1 = 0.0,f2=0.0,f3=0.0;
 
 		for(Map.Entry<String, Double> entry : _ranked_docs_transformed.entrySet())
 		{

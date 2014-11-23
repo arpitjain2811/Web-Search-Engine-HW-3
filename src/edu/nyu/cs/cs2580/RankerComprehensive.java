@@ -27,9 +27,6 @@ public class RankerComprehensive extends Ranker {
 	
 	  Queue<ScoredDocument> rankQueue = new PriorityQueue<ScoredDocument>();
 	  
-	    int docid = -1;
-	    
-	    
 	    QueryPhrase qp=new QueryPhrase(query._raw);
 	    qp.processQuery();
 	    
@@ -86,8 +83,6 @@ public class RankerComprehensive extends Ranker {
 	      if (rankQueue.size() > numResults) {
 	        rankQueue.poll();
 	      }
-	      docid = i._docid;
-	      
 	      i = _indexer.nextDoc(query,i._docid);
 	    }
 
@@ -103,8 +98,10 @@ public class RankerComprehensive extends Ranker {
 	private ScoredDocument scoreDocument(Query query, Document document) {
 		double title_score = runquery_title(query, document);
 	    double cosine_score = runquery_cosine(query, document);
+	    double pagerank_score = document.getPageRank();
+	    double numviews_score = (double) document.getNumViews();
 
-	    double score = title_score + cosine_score;
+	    double score = title_score + cosine_score + pagerank_score + numviews_score;
 
 	    return new ScoredDocument(document, score);
 	}

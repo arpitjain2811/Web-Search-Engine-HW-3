@@ -241,9 +241,7 @@ class QueryHandler implements HttpHandler {
 	
 	// Need a method that retrieves terms (scoreddocs, numterms)
 	
-	
-	
-	Vector<ScoredTerms> scored = PRF.Relevance(scoredDocs,cgiArgs._numDocs, cgiArgs._numTerms, _indexer.getDict()); 	
+	Vector<ScoredTerms> scored = PRF.Relevance(scoredDocs,cgiArgs._numDocs, cgiArgs._numTerms, _indexer.getDict(),SearchEngine.OPTIONS._keepTerms); 	
 	StringBuffer response = new StringBuffer();
 	switch (cgiArgs._outputFormat) {
 	case TEXT:

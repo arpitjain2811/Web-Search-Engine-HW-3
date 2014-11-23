@@ -123,7 +123,8 @@ public class IndexerInvertedDoconly extends Indexer implements Serializable {
       
   }
 
-  private  void processDocument(String content) {
+  @SuppressWarnings("resource")
+private  void processDocument(String content) {
       
       Scanner s = new Scanner(content).useDelimiter("\t");
       Set<Integer> uniqueTerms = new HashSet<Integer>();
@@ -144,7 +145,7 @@ public class IndexerInvertedDoconly extends Indexer implements Serializable {
 
       String url = s.next();
 
-      s = null;
+      s.close();
 
       // update stuff for doc
       doc.setTitle(title);
@@ -207,6 +208,7 @@ public class IndexerInvertedDoconly extends Indexer implements Serializable {
 	    ++_totalTermFrequency;
 	    
 	}
+	s.close();
 	return;
     }
     

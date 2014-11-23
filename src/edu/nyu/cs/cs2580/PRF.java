@@ -9,7 +9,7 @@ import com.google.common.collect.HashBiMap;
 public class PRF {
 	
 		
-	public static Vector<ScoredTerms> Relevance(Vector<ScoredDocument> scoredDocs,int numdocs, int numTerms, HashBiMap<String,Integer> dict){
+	public static Vector<ScoredTerms> Relevance(Vector<ScoredDocument> scoredDocs,int numdocs, int numTerms, HashBiMap<String,Integer> dict,int max_terms){
 		int i;
 		int Total=0;
 		HashMap<Integer, Integer> WordMap = new HashMap<Integer, Integer>();
@@ -17,7 +17,7 @@ public class PRF {
 		for (i=0; i<numdocs; i++){
 			ScoredDocument docum = scoredDocs.get(i);
 			Document d =  docum.get_doc();
-			HashMap<Integer, Integer> wordHash = ((DocumentIndexed) d).getTopWords(numTerms);
+			HashMap<Integer, Integer> wordHash = ((DocumentIndexed) d).getTopWords(max_terms);
 			
 			
 			for (int j:wordHash.keySet())
@@ -63,6 +63,11 @@ public class PRF {
 		
 		for(i=0;i<scoreTerms.size();i++)
 			scoreTerms.get(i).set_score(scoreTerms.get(i).get_score()/Total);
+		
+		Vector<ScoredTerms> scoreTerms_ret = new Vector<ScoredTerms>();
+		
+		for(i=0;i<numTerms;i++)
+			scoreTerms_ret.add(scoreTerms.get(i));
 		
 		return scoreTerms;
 		

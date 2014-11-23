@@ -8,7 +8,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.Serializable;
 import java.lang.StringBuilder;
 import java.util.Scanner;
 import java.io.File;
@@ -20,7 +19,8 @@ import java.io.ByteArrayInputStream;
 public class ReadCorpus {
     
     // for test corpus
-    public String createFileInput(String content) throws IOException {
+    @SuppressWarnings("resource")
+	public String createFileInput(String content) throws IOException {
 	StringBuilder out = new StringBuilder();
 	Scanner s = new Scanner(content).useDelimiter("\t");
 	String title = s.next();
@@ -34,6 +34,7 @@ public class ReadCorpus {
 	out.append('\t');
 	out.append(title.replace(" ", "_"));
 
+	s.close();
 	return out.toString();
     }
     
@@ -86,6 +87,7 @@ public class ReadCorpus {
 	while ((line = reader.readLine()) != null) {
 	    everything.append(line);
 	}
+	reader.close();
 	return everything.toString();
     }    
 

@@ -156,7 +156,8 @@ public class IndexerInvertedOccurrence extends Indexer implements Serializable {
 	return skip;
     }
     
-    private void processDocument(String content) {
+    @SuppressWarnings("resource")
+	private void processDocument(String content) {
 	// TODO Auto-generated method stub
 	
 	Scanner s = new Scanner(content).useDelimiter("\t");
@@ -267,6 +268,7 @@ public class IndexerInvertedOccurrence extends Indexer implements Serializable {
 
 	    pos++;
 	}
+	s.close();
 	return;
     }
     

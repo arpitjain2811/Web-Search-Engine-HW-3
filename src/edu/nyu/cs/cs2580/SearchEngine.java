@@ -78,6 +78,9 @@ public class SearchEngine {
     // Number of top occurring words to keep from each document
     public Integer _keepTerms = null;
 
+    // File that contains one stop word per line
+    public String _stopWordsList = null;
+
 
     // Additional group specific configuration can be added below.
 
@@ -135,6 +138,10 @@ public class SearchEngine {
       _keepTerms = Integer.valueOf( options.get("keepTerms") );
       Check(_keepTerms != null, 
       "Missing option: keepTerms");
+
+      _stopWordsList = options.get("stopWordsList");
+      Check(_stopWordsList != null, 
+      "Missing option: stopWordsList");
     }
   }
   public static Options OPTIONS = null;

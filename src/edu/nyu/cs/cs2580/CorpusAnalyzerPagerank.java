@@ -11,10 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import java.util.HashSet;
-import java.util.Map;
-
 import edu.nyu.cs.cs2580.SearchEngine.Options;
 
 /**
@@ -136,9 +133,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
 	}
     }
     _linkGraph.put(_linkHash.get(key), linkAdjSet);
-    System.out.println(_linkHash.get(key) + "  " + key);
   }
-  System.out.println(_linkGraph);
   return;
 } 
     /**
@@ -241,7 +236,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
     this.set_ranked_docs(loaded.get_ranked_docs());
     loaded = null;
     System.out.println("Loaded PageRank");
-    
+    reader.close();
     return null;
   }
 

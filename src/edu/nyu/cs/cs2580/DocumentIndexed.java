@@ -2,7 +2,6 @@ package edu.nyu.cs.cs2580;
 
 import java.util.Vector;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.BitSet;
 
@@ -99,15 +98,14 @@ public class DocumentIndexed extends Document implements Serializable {
     public HashMap<Integer, Integer> getTopWords(int m){
     	HashMap<Integer, Integer> top_words = new HashMap<Integer, Integer>();
     	Vector<Integer> word_counts = Elias_decode(_top_words);
-    	for(int i = 0; i < m; i++)
-    		top_words.put(word_counts.get(2 * i), word_counts.get( (2 * i) + 1));
+    	for(int i = 0; i < m && i < word_counts.size(); i = i + 2)
+    		top_words.put(word_counts.get(i), word_counts.get(i + 1));
     	return top_words;
     }
 
 
 
 	private Vector<Integer> Elias_decode(BitSet b) {
-		 
 		 int start = 0;
 		 int end = 0;
 		 int first_zero;

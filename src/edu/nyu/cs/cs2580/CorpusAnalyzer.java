@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.security.NoSuchAlgorithmException;
@@ -50,6 +49,7 @@ public abstract class CorpusAnalyzer {
       if (line != null) {
         _matcher = LINK_PATTERN.matcher(line);
       }
+
     }
 
     // Returns the simple file name as the link source.

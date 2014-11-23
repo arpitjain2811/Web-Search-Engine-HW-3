@@ -138,7 +138,8 @@ class IndexerFullScan extends Indexer implements Serializable {
    * document, and constructs the token vectors for both title and body.
    * @param content
    */
-  private void processDocument(String content) {
+  @SuppressWarnings("resource")
+private void processDocument(String content) {
     Scanner s = new Scanner(content).useDelimiter("\t");
 
     String title = s.next();
@@ -192,6 +193,7 @@ class IndexerFullScan extends Indexer implements Serializable {
       }
       tokens.add(idx);
     }
+    s.close();
     return;
   }
   
