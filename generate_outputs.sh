@@ -2,7 +2,7 @@
 PRF=./prf/
 OUTPUT=qsim.tsv
 PREFIX=prf-
-RANKER="CONJUNCTIVE"
+RANKER="comprehensive"
 SUFFIX=.tsv
 PRFFILE=prf.tsv
 
@@ -19,7 +19,7 @@ while read q ; do
     	echo "Creating file... $FILE"
     	touch $FILE
 	fi
-	curl "http://localhost:25808/prf?query=$q&ranker=$RANKER&numdocs=30&numterms=500" >> $FILE
+	curl "http://linserv2.cims.nyu.edu:25808/prf?query=$q&ranker=$RANKER&numdocs=15&numterms=100" >> $FILE
     if [ ! -e $PRFFILE ]
     then
         echo "Creating file... $PRFFILE"

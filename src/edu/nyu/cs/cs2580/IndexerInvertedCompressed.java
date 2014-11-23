@@ -108,7 +108,7 @@ public class IndexerInvertedCompressed extends Indexer implements Serializable {
 		  }
 	      }
 	      else {
-		  //System.out.println(n_doc + "   " + fileEntry.getName());
+		  System.out.println(fileEntry.getName());
 		  
 		  String nextDoc = DocReader.createFileInput(fileEntry);
 		  processDocument(nextDoc);
