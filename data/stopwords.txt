@@ -1,3 +1,7 @@
+article
+related
+links
+references
 a
 able
 about
