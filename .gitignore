@@ -3,3 +3,9 @@
 *~
 *.idx
 .*
+
+data/index
+
+data/log
+
+data/simple
