@@ -62,9 +62,11 @@ public class PRF {
 			scoreTerms.get(i).set_score(scoreTerms.get(i).get_score()/Total);
 		
 		Vector<ScoredTerms> scoreTerms_ret = new Vector<ScoredTerms>();
-		
+		int tot=0;
+		for(i=0;i<scoreTerms.size();i++)
+			tot+= scoreTerms.get(i).get_score();
 		for(i=0;i<numTerms;i++)
-			scoreTerms_ret.add(scoreTerms.get(i));
+			scoreTerms_ret.add(scoreTerms.get(i)/tot);
 		
 		return scoreTerms_ret;
 		
