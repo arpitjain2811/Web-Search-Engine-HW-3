@@ -11,7 +11,7 @@ public class PRF {
 		
 	public static Vector<ScoredTerms> Relevance(Vector<ScoredDocument> scoredDocs,int numdocs, int numTerms, HashBiMap<String,Integer> dict,int max_terms){
 		int i;
-		int Total=0;
+		Double Total=0.0;
 		HashMap<Integer, Integer> WordMap = new HashMap<Integer, Integer>();
 		numdocs= Math.min(numdocs, scoredDocs.size());
 		for (i=0; i<numdocs; i++){
@@ -64,9 +64,9 @@ public class PRF {
 		System.out.println(Total);
 		Vector<ScoredTerms> scoreTerms_ret = new Vector<ScoredTerms>();
 		
-		int tot=0;
+		Double tot=0.0;
 		for(i=0;i<numTerms;i++)
-			tot+= scoreTerms.get(i).get_score();
+			tot= tot + scoreTerms.get(i).get_score();
 		
 		System.out.println(tot);
 		for(i=0;i<numTerms;i++)
