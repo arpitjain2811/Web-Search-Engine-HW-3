@@ -94,7 +94,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
     }
     
   }
-  System.out.println(_linkHash.size());
+  //System.out.println(_linkHash.size());
   
   // Create a local map variable (efficient to iterate over)
   System.out.println("Creating Graph");
@@ -104,7 +104,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
       if( _linkHash.containsKey(redirect_from))
 	  redirects_to.put( _linkHash.get(redirect_from), _linkHash.get(page) );
   }
-  System.out.println(redirects_to);
+  //System.out.println(redirects_to);
 
   // Iterate over Map keys
   for (String key : linksource.keySet()) {
@@ -191,7 +191,7 @@ public class CorpusAnalyzerPagerank extends CorpusAnalyzer implements Serializab
       ranks = new ArrayList<Double>( new_ranks );
       //System.out.println(ranks);
     }
-    System.out.println(ranks);
+    //System.out.println(ranks);
     for(String page : _linkHash.keySet())
       get_ranked_docs().put(page, ranks.get(_linkHash.get(page)));
      	
