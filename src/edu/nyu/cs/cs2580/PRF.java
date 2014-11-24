@@ -63,7 +63,7 @@ public class PRF {
 		
 		Vector<ScoredTerms> scoreTerms_ret = new Vector<ScoredTerms>();
 		int tot=0;
-		for(i=0;i<scoreTerms.size();i++)
+		for(i=0;i<numTerms;i++)
 			tot+= scoreTerms.get(i).get_score();
 		for(i=0;i<numTerms;i++)
 			scoreTerms_ret.add(scoreTerms.get(i)/tot);
