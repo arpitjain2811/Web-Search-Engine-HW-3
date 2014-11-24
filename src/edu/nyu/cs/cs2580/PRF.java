@@ -66,7 +66,8 @@ public class PRF {
 		for(i=0;i<numTerms;i++)
 			tot+= scoreTerms.get(i).get_score();
 		for(i=0;i<numTerms;i++)
-			scoreTerms_ret.add(scoreTerms.get(i)/tot);
+			scoreTerms.get(i).set_score(scoreTerms.get(i).get_score()/tot);
+			scoreTerms_ret.add(scoreTerms.get(i));
 		
 		return scoreTerms_ret;
 		
