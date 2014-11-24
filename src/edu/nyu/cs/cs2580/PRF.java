@@ -48,9 +48,6 @@ public class PRF {
 			ScoredTerms scoreTs = new ScoredTerms(new Terms(name), scor);
 			scoreTerms.add(scoreTs);
 			
-			numTerms--;
-			if(numTerms<=0)
-				break;
 	
 		}
 		
@@ -69,7 +66,7 @@ public class PRF {
 		for(i=0;i<numTerms;i++)
 			scoreTerms_ret.add(scoreTerms.get(i));
 		
-		return scoreTerms;
+		return scoreTerms_ret;
 		
 	}
 	
