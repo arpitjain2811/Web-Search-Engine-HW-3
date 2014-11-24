@@ -46,7 +46,7 @@ public class RankerComprehensive extends Ranker {
         	for(j=0;j<qp.phrase.size();j++) {
         		pos=_indexer.NextPhrase(qp.phrase.get(j), i._docid, -1);
 				if (pos != Double.POSITIVE_INFINITY)
-	  				System.out.println( "Position: " + pos+ " Docid: " + i._docid + " Docname: " + i.getTitle() );
+	  			//	System.out.println( "Position: " + pos+ " Docid: " + i._docid + " Docname: " + i.getTitle() );
 	  			 if(pos==Double.POSITIVE_INFINITY)
 	  				 break;
 	  		}
@@ -55,7 +55,7 @@ public class RankerComprehensive extends Ranker {
 	  			all.add(scoreDocument(query, i));
 	  	}
 	  	else {
-	  		System.out.println(  " Docid: " + i._docid + " Docname: " + i.getTitle() );	
+	  	//	System.out.println(  " Docid: " + i._docid + " Docname: " + i.getTitle() );	
 	        all.add(scoreDocument(query, i));	
 	    }
 	    
